@@ -1,3 +1,5 @@
+import 'dart:js_util';
+
 import 'package:bloc/bloc.dart';
 import 'package:meta/meta.dart';
 import '../data_base/db_helper.dart';
@@ -28,18 +30,23 @@ class NotesCubit extends Cubit<NotesState> {
 
   Future<List<NotesModel>> getAllData() async {
     fetchInitialData();
-    return await noteList;
+    emit(NotesLoaded(list: noteList));
+     return noteList;
+
+
   }
    void update( NotesModel notesModel)async{
      var data = await dbHelper.updateNotes(notesModel);
      if(data==1){
        noteList=await dbHelper.getData();
+       emit(NotesLoaded(list: noteList));
      }
    }
     void deleteNote(int id)async{
      var data = await dbHelper.deleteNotes(id);
      if(data){
        noteList= await dbHelper.getData();
+       emit(NotesLoaded(list: noteList));
      }
 
     }
